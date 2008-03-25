@@ -1,3 +1,4 @@
 jabber:
   jid: username@your.jabber.server
   password: yourpassword
+fullscreen: false

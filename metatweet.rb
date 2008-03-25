@@ -2,21 +2,32 @@
 include Gosu
 
 CONFIG = YAML.load_file 'config.yml'
-FULL_SCREEN = false
 
 class Message
-  %w( body x y z ).each { |at| attr_accessor at.to_sym }
+  #%w( body x y z alpha fontsize ).each { |at| attr_accessor at.to_sym }
+  attr_accessor :body, :x, :y, :z, :alpha, :fontsize, :created_at
   
-  def initialize(body, x=nil, y=nil, z=1)
-    @body = HTMLEntities.new.decode(body)
+  def initialize(body, x=nil, y=nil)
+    @body = HTMLEntities.new.decode body.split(':')[1]    
     
-    @x = x
-    @x = rand(100) if @x.nil?
+    @x = x ? x : rand(100)
+    @y = y ? y : rand(700)
+    @z = 1 + rand(10)
     
-    @y = y
-    @y = rand(768) if @y.nil?
+    @alpha = 255
+    @fontsize = 14 + rand(18)
     
-    @z = z
+    @created_at = Time.now
+  end
+  
+  def age_in_seconds
+    (Time.now - @created_at).floor
+  end
+  
+  def degrade_alpha
+    return @alpha if self.age_in_seconds < 45
+    return @alpha if @alpha == 1
+    @alpha = @alpha - 1
   end
 end
 
@@ -34,12 +45,12 @@ end
 
 class TweetWindow < Gosu::Window
   def initialize
-    super(1024, 768, FULL_SCREEN, 20)
+    super(1024, 768, CONFIG['fullscreen'], 20)
     self.caption = 'MetaTweet'
     
-    @text = Gosu::Font.new(self, 'Helvetica', 18)
+    @background_image = Gosu::Image.new(self, "bg.png", false)
     @jabber = JabberStream.new
-    @messages = Array.new
+    @messages = Array.new    
   end
   
   def update
@@ -52,8 +63,11 @@ class TweetWindow < Gosu::Window
   end
   
   def draw
+    @background_image.draw(0, 0, 0, 2, 2);
+    
     @messages.each do |msg| 
-      @text.draw(msg.body, msg.x, msg.y, msg.z)
+      t = Gosu::Image.from_text(self, msg.body, "Helvetica", msg.fontsize, 10, 800, :left)
+      t.draw(msg.x, msg.y, msg.z, 1, 1, Gosu::Color.new(msg.degrade_alpha, 0, 83, 65))
     end
   end
 end
