@@ -1,0 +1,3 @@
+jabber:
+  jid: username@your.jabber.server
+  password: yourpassword

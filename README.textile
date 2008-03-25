@@ -1,0 +1,17 @@
+h1. MetaTweet
+
+Twitter tracking Twitter on Twitter.
+
+h2. Requirements
+
+* Ruby 1.8.6 (might work on other versions)
+* xmpp4r-simple 
+
+h2. Setup
+
+# Create a Twitter account.
+# Create a Jabber account.
+# Set up your Jabber account as a device for your Twitter account.
+# Send "track twitter" to the twitter@twiter.com Jabber bot.
+# Run metatweet.rb.
+# Soak up the zeitgeist.
